@@ -92,7 +92,7 @@ Install-Chocolatey
 Install-Apps
 
 Log-Message "Waiting for Steam and Epic Games Launcher to update..."
-Start-Sleep -Seconds 60  # Adjust this wait time as needed
+Start-Sleep -Seconds 10  # Adjust this wait time as needed
 
 Install-MarvelRivals
 Install-Fortnite
