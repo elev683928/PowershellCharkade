@@ -2,12 +2,12 @@
 Set-ExecutionPolicy Bypass -Scope Process -Force
 $ErrorActionPreference = "Stop"
 
-# Function to log messages to the terminal only
+# Function to log messages to the CMD terminal
 function Log-Message {
     param (
         [string]$message
     )
-    Write-Output $message
+    Write-Host "[INFO] $message"
 }
 
 # Log the start of the installation process
@@ -101,4 +101,3 @@ Install-Fortnite
 
 # End of the process
 Log-Message "Installation process completed."
-
