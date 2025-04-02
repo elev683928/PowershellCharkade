@@ -2,7 +2,7 @@
 Set-ExecutionPolicy Bypass -Scope Process -Force
 $ErrorActionPreference = "Stop"
 
-# Function to log messages to the CMD terminal
+# Function to log messages directly to the terminal
 function Log-Message {
     param (
         [string]$message
@@ -10,7 +10,6 @@ function Log-Message {
     Write-Host "[INFO] $message"
 }
 
-# Log the start of the installation process
 Log-Message "Starting installation process..."
 
 # Function to install Chocolatey
@@ -35,14 +34,14 @@ function Install-Chocolatey {
 function Install-Apps {
     Log-Message "Installing Steam and Epic Games Launcher..."
     try {
-        choco install steam -y
+        choco install steam -y | Write-Host
         Log-Message "Steam installation started."
     } catch {
         Log-Message "Failed to install Steam."
     }
-
+    
     try {
-        choco install epicgameslauncher -y
+        choco install epicgameslauncher -y | Write-Host
         Log-Message "Epic Games Launcher installation started."
     } catch {
         Log-Message "Failed to install Epic Games Launcher."
@@ -52,28 +51,28 @@ function Install-Apps {
 # Function to install Marvel Rivals from Steam
 function Install-MarvelRivals {
     $SteamAppID = "2767030"  # Marvel Rivals App ID
-    $SteamPath = "$env:ProgramFiles(x86)\Steam"
+    $SteamExe = "${env:ProgramFiles(x86)}\Steam\steam.exe"
     
-    Log-Message "Checking if Steam is installed..."
-    if (Test-Path "$SteamPath\steam.exe") {
+    Log-Message "Checking if Steam is installed at $SteamExe..."
+    if (Test-Path $SteamExe) {
         Log-Message "Steam found. Checking if it's up to date..."
-        Start-Process -FilePath "$SteamPath\steam.exe" -ArgumentList "-silent" -NoNewWindow -Wait
+        Start-Process -FilePath $SteamExe -ArgumentList "-silent" -NoNewWindow -Wait
         Log-Message "Steam is updated and ready."
 
         Log-Message "Installing Marvel Rivals from Steam..."
-        Start-Process -FilePath "$SteamPath\steam.exe" -ArgumentList "steam://install/$SteamAppID" -NoNewWindow -Wait
+        Start-Process -FilePath $SteamExe -ArgumentList "steam://install/$SteamAppID" -NoNewWindow -Wait
         Log-Message "Marvel Rivals installation initiated."
     } else {
-        Log-Message "Steam is not installed correctly or its path is incorrect."
+        Log-Message "Steam is not installed correctly or its path is incorrect: $SteamExe"
         exit 1
     }
 }
 
 # Function to install Fortnite via Epic Games Launcher
 function Install-Fortnite {
-    $EpicGamesPath = "$env:ProgramFiles\Epic Games\Launcher\Portal\Binaries\Win64\EpicGamesLauncher.exe"
-
-    Log-Message "Checking if Epic Games Launcher is installed..."
+    $EpicGamesPath = "${env:ProgramFiles}\Epic Games\Launcher\Portal\Binaries\Win64\EpicGamesLauncher.exe"
+    
+    Log-Message "Checking if Epic Games Launcher is installed at $EpicGamesPath..."
     if (Test-Path $EpicGamesPath) {
         Log-Message "Epic Games Launcher found. Checking if it's up to date..."
         Start-Process -FilePath $EpicGamesPath -ArgumentList "--no-detect" -NoNewWindow -Wait
@@ -83,7 +82,7 @@ function Install-Fortnite {
         Start-Process -FilePath $EpicGamesPath -ArgumentList "launch --game=fortnite" -NoNewWindow -Wait
         Log-Message "Fortnite installation initiated."
     } else {
-        Log-Message "Epic Games Launcher is not installed correctly or its path is incorrect."
+        Log-Message "Epic Games Launcher is not installed correctly or its path is incorrect: $EpicGamesPath"
         exit 1
     }
 }
@@ -92,12 +91,10 @@ function Install-Fortnite {
 Install-Chocolatey
 Install-Apps
 
-# Pause briefly to allow the launchers to update before starting game installations
 Log-Message "Waiting for Steam and Epic Games Launcher to update..."
-Start-Sleep -Seconds 60  # Adjust the time depending on your connection and how long updates typically take
+Start-Sleep -Seconds 60  # Adjust this wait time as needed
 
 Install-MarvelRivals
 Install-Fortnite
 
-# End of the process
 Log-Message "Installation process completed."
