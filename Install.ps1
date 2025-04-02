@@ -1,3 +1,4 @@
+# UPDATED 
 # Ensure PowerShell runs with execution policy bypassed
 Set-ExecutionPolicy Bypass -Scope Process -Force
 $ErrorActionPreference = "Stop"
