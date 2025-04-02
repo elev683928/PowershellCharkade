@@ -2,16 +2,12 @@
 Set-ExecutionPolicy Bypass -Scope Process -Force
 $ErrorActionPreference = "Stop"
 
-# Define the log file path
-$logFile = "$env:USERPROFILE\Desktop\install_log.txt"
-
-# Function to log messages to both console and log file
+# Function to log messages to the terminal only
 function Log-Message {
     param (
         [string]$message
     )
     Write-Output $message
-    Add-Content -Path $logFile -Value ("$(Get-Date) - " + $message)
 }
 
 # Log the start of the installation process
@@ -105,10 +101,4 @@ Install-Fortnite
 
 # End of the process
 Log-Message "Installation process completed."
-
-# Delete the log file after installation is complete
-if (Test-Path $logFile) {
-    Remove-Item -Path $logFile -Force
-    Log-Message "Log file deleted after successful installation."
-}
 
